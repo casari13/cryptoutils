@@ -8,7 +8,9 @@ import static org.junit.Assert.*;
 
 public class LibraryTest {
     @Test public void someLibraryMethodReturnsTrue() {
-        Library classUnderTest = new Library();
-        assertTrue("someLibraryMethod should return 'true'", classUnderTest.someLibraryMethod());
+        CryptoUtils classUnderTest = new CryptoUtils();
+        
+
+        assertTrue("someLibraryMethod should return 'true'", classUnderTest.Hash());
     }
 }
