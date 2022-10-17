@@ -3,25 +3,60 @@
  */
 package cryptoutils;
 
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Properties;
 
+
 public class CryptoUtils {
-    public String getGreeting() {return "Hello";}
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        //getSalt() function
         byte[] salt12 = getSalt();
         byte[] salt3 = getSalt();
+
+        //getDigest() function
         String digest1 = getDigest("teknos", salt12);
         String digest2 = getDigest("teknos", salt12);
         String digest3 = getDigest("teknos", salt3);
         System.out.println("digest1:" + digest1);
         System.out.println("digest2:" + digest2);
         System.out.println("digest3:" + digest3);
+
+        //Hash() function
+        byte[] m1="carlota".getBytes();
+        byte[] m2="carlota".getBytes();
+
+        DigestResult dr1=Hash(m1);
+        DigestResult dr2=Hash(m2);
+
+        System.out.println("hash1: "+dr1.getHash().toString());
+        System.out.println("hash2: "+dr2.getHash().toString());
+
+        //encrypt() function
+        Properties prop = new Properties();
+        prop.load(new FileReader("cryptoUtils.properties"));
+        String algorithm= (String) prop.get("encrypt.algorithm");
+        int iterations=(Integer) prop.get("encrypt.iterations");
+
+        byte[] plainText = "carlota".repeat(iterations).getBytes();
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
+        keyGenerator.init(128);
+        String password = keyGenerator.generateKey().toString();
+        byte[] encryptedText = Encrypt(plainText, password);
+
+        System.out.println("Encrypted Text: "+encryptedText.toString());
+
+        //Decrypt() function
+        byte[] decriptedText=Decrypt(encryptedText,password);
+
     }
     public static String getDigest(String data, byte[] salt) throws NoSuchAlgorithmException {
         byte[] dataBytes = data.getBytes();
@@ -39,7 +74,7 @@ public class CryptoUtils {
         return salt;
     }
 
-    public DigestResult Hash(byte[] message){
+    public static DigestResult Hash(byte[] message){
         DigestResult digRes = new DigestResult();
         Properties prop = new Properties();
         try {
@@ -49,7 +84,7 @@ public class CryptoUtils {
             String algorithm=(String)prop.get("hash.algorithm");
             digRes.setAlgorithm(algorithm);
 
-            byte[] saltBytes=this.getSalt();
+            byte[] saltBytes=getSalt();
             digRes.setSalt(saltBytes);
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
 
@@ -65,5 +100,57 @@ public class CryptoUtils {
             throw new RuntimeException(e);
         }
         return digRes;
+    }
+
+    public static byte[] Encrypt (byte[] plainText, String password) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidAlgorithmParameterException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        //check which algorithm to use
+        Properties prop = new Properties();
+        prop.load(new FileReader("cryptoUtils.properties"));
+        String algorithm= (String) prop.get("encrypt.algorithm");
+
+        //convert password to key
+        Key convertedPassword= getPrivateKeyFromPassword(password);
+
+        //get IV parameter
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
+        IvParameterSpec iv = new IvParameterSpec(bytes);
+
+        //Encrypt Text
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.ENCRYPT_MODE, convertedPassword, iv);
+        byte[] encryptedText = cipher.doFinal(plainText);
+
+        return encryptedText;
+    }
+
+    public static byte[] Decrypt (byte[] cipherText, String password) throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException {
+        //check which algorithm to use
+        Properties prop = new Properties();
+        prop.load(new FileReader("cryptoUtils.properties"));
+        String algorithm= (String) prop.get("encrypt.algorithm");
+
+        //convert password to key
+        Key convertedPassword= getPrivateKeyFromPassword(password);
+
+        //Decrypt de encrypted Text
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.DECRYPT_MODE, convertedPassword, iv);
+        byte[] decryptedText = cipher.doFinal(cipherText);
+
+        return decryptedText;
+    }
+
+    private static Key getPrivateKeyFromPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] salt = new byte[100];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(salt);
+
+        PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt, 1000, 256);
+        SecretKey pbeKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256").generateSecret(pbeKeySpec);
+        return new SecretKeySpec(pbeKey.getEncoded(), "AES");
     }
 }

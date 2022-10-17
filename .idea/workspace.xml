@@ -5,19 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="25e11b70-e93a-4184-83a6-014fdc22d502" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/CryptoUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/DigestResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/src/main/resources/cryptoUtils.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cryptoutils.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/Library.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/test/java/cryptoutils/LibraryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/cryptoutils/LibraryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/CryptoUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/CryptoUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/main/resources/cryptoUtils.properties" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/resources/cryptoUtils.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/src/test/java/cryptoutils/LibraryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/cryptoutils/CryptoUtilsTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +60,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/10033554/source/repos/cryptoutils",
+    "last_opened_file_path": "C:/Users/10033554/source/repos/threadtests",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
