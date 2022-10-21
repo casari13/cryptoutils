@@ -5,6 +5,17 @@ package cryptoutils;
 
 import org.junit.Test;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 import static org.junit.Assert.assertEquals;
 
 public class CryptoUtilsTest {
@@ -17,5 +28,17 @@ public class CryptoUtilsTest {
         String res2= String.valueOf(CryptoUtils.Hash(m2));
 
         assertEquals(res1,res2);
+    }
+
+    @Test
+    public void EncryptAndDecrypt() throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+        byte[] message="carlota".repeat(5).getBytes();
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(128);
+        String password = keyGenerator.generateKey().toString();
+        byte[] encryptedText = CryptoUtils.Encrypt(message, password);
+        byte[] decryptedText=CryptoUtils.Decrypt(encryptedText,password);
+
+        assertEquals(message, decryptedText);
     }
 }

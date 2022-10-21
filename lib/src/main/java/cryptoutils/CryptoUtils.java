@@ -7,16 +7,18 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Properties;
 
 
 public class CryptoUtils {
+    public static EncryptedMessage em=new EncryptedMessage();
     public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         //getSalt() function
         byte[] salt12 = getSalt();
@@ -56,6 +58,7 @@ public class CryptoUtils {
 
         //Decrypt() function
         byte[] decriptedText=Decrypt(encryptedText,password);
+        System.out.println("Decrypted Text: "+decriptedText.toString());
 
     }
     public static String getDigest(String data, byte[] salt) throws NoSuchAlgorithmException {
@@ -103,45 +106,89 @@ public class CryptoUtils {
     }
 
     public static byte[] Encrypt (byte[] plainText, String password) throws NoSuchPaddingException,
-            NoSuchAlgorithmException, IOException, InvalidKeySpecException, InvalidAlgorithmParameterException,
+            NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        //check which algorithm to use
-        Properties prop = new Properties();
-        prop.load(new FileReader("cryptoUtils.properties"));
-        String algorithm= (String) prop.get("encrypt.algorithm");
-
         //convert password to key
         Key convertedPassword= getPrivateKeyFromPassword(password);
 
         //get IV parameter
         SecureRandom secureRandom = new SecureRandom();
-        byte[] bytes = new byte[16];
-        secureRandom.nextBytes(bytes);
-        IvParameterSpec iv = new IvParameterSpec(bytes);
+        byte[] salt = new byte[16];
+        secureRandom.nextBytes(salt);
+        IvParameterSpec iv = new IvParameterSpec(salt);
 
         //Encrypt Text
-        Cipher cipher = Cipher.getInstance(algorithm);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, convertedPassword, iv);
         byte[] encryptedText = cipher.doFinal(plainText);
+        em= new EncryptedMessage(encryptedText, salt);
 
         return encryptedText;
     }
 
-    public static byte[] Decrypt (byte[] cipherText, String password) throws IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException {
-        //check which algorithm to use
-        Properties prop = new Properties();
-        prop.load(new FileReader("cryptoUtils.properties"));
-        String algorithm= (String) prop.get("encrypt.algorithm");
-
+    public static byte[] Decrypt (byte[] encryptedText, String password) throws IllegalBlockSizeException,
+            BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+            InvalidAlgorithmParameterException, InvalidKeyException {
         //convert password to key
         Key convertedPassword= getPrivateKeyFromPassword(password);
 
+        //get salt
+        IvParameterSpec salt = new IvParameterSpec(em.getSalt());
+
         //Decrypt de encrypted Text
-        Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.DECRYPT_MODE, convertedPassword, iv);
-        byte[] decryptedText = cipher.doFinal(cipherText);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, convertedPassword, salt);
+        byte[] decryptedText = cipher.doFinal(encryptedText);
 
         return decryptedText;
+    }
+
+    public static byte[] Sign(byte[]  message) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, InvalidKeyException, SignatureException {
+        //load properties
+        Properties prop = new Properties();
+        prop.load(new FileReader("cryptoUtils.properties"));
+        String KeyStoreName=(String) prop.get("assymetric.keystorename");
+        String p12Password= (String) prop.get("assymetric.p12Password");
+        String passwordAlias=(String) prop.get("assymetric.keyAlias");
+        String algorithm=(String) prop.get("assymetric.algorithm");
+
+        //Get private key
+        KeyStore keystore = KeyStore.getInstance("PKCS12");
+        keystore.load(new FileInputStream(p12Password), KeyStoreName.toCharArray());
+        Key privateKey = keystore.getKey(passwordAlias, KeyStoreName.toCharArray());
+
+        Signature signer = Signature.getInstance(algorithm);
+        signer.initSign((PrivateKey) privateKey);
+        signer.update(message);
+        byte[] signature = signer.sign();
+
+        return(signature);
+    }
+
+    public static boolean Verify(byte[]  message, byte[] signature, byte[] certificate) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        InputStream certificateStream= new ByteArrayInputStream(certificate);
+        var certificateFactory = CertificateFactory.getInstance("X.509");
+        var cert = certificateFactory.generateCertificate(certificateStream);
+        try {
+            ((X509Certificate) cert).checkValidity();
+        } catch( Exception e) {
+            System.out.println(e.getMessage());
+        }
+        var publicKey = cert.getPublicKey();
+
+        Properties prop = new Properties();
+        prop.load(new FileReader("cryptoUtils.properties"));
+        String algorithm=(String) prop.get("assymetric.algorithm");
+
+        Signature signer = Signature.getInstance(algorithm);
+        signer.initVerify(publicKey);
+        signer.update(message);
+
+        boolean isValid = signer.verify(signature);
+
+        return isValid;
+
+
     }
 
     private static Key getPrivateKeyFromPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
