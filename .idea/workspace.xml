@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="25e11b70-e93a-4184-83a6-014fdc22d502" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/EncryptedMessage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/CryptoUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/java/cryptoutils/CryptoUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/main/resources/cryptoUtils.properties" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/main/resources/cryptoUtils.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/src/test/java/cryptoutils/CryptoUtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/lib/src/test/java/cryptoutils/CryptoUtilsTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,16 +51,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/10033554/source/repos/cryptoutils",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/10033554/source/repos/cryptoutils&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\10033554\source\repos\cryptoutils\lib\src\main\resources" />

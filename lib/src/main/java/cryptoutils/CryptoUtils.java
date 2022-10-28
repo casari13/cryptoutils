@@ -61,6 +61,16 @@ public class CryptoUtils {
         System.out.println("Decrypted Text: "+decriptedText.toString());
 
     }
+
+    /**
+     * getDigest()
+     * gets digest
+     *
+     * @param String Data --> message
+     * @param byte[] salt
+     * @throws NoSuchAlgorithmException
+
+     */
     public static String getDigest(String data, byte[] salt) throws NoSuchAlgorithmException {
         byte[] dataBytes = data.getBytes();
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -70,6 +80,11 @@ public class CryptoUtils {
         return  base64Encoder.encodeToString(digest);
     }
 
+    /**
+     * getSalt()
+     * generates Salt bytes
+     *
+     */
     public static byte[] getSalt() {
         SecureRandom sercureRandom = new SecureRandom();
         var salt = new byte[16];
@@ -77,6 +92,14 @@ public class CryptoUtils {
         return salt;
     }
 
+    /**
+     * Hash()
+     * extracxts hashs, algorithm and salt from encrypted message
+     *
+     * @param byte[] message
+     * @return DigesRestult
+
+     */
     public static DigestResult Hash(byte[] message){
         DigestResult digRes = new DigestResult();
         Properties prop = new Properties();
@@ -105,6 +128,18 @@ public class CryptoUtils {
         return digRes;
     }
 
+    /**
+     * encrypt()
+     * encrypts given message
+     *
+     * @param byte[] plain Text
+     * @param String password
+     * @return byte[] encryptedTest
+     * @throws NoSuchPaddingException,
+     *             NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException,
+     *             InvalidKeyException, IllegalBlockSizeException, BadPaddingException
+
+     */
     public static byte[] Encrypt (byte[] plainText, String password) throws NoSuchPaddingException,
             NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException,
             InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
@@ -126,6 +161,17 @@ public class CryptoUtils {
         return encryptedText;
     }
 
+    /**
+     * Decrypt()
+     * Decrypts given encrypted message
+     *
+     * @param byte[] encrypted Text
+     * @param String password
+     * @return byte[] encryptedTest
+     * @throws IllegalBlockSizeException,BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException,
+     *          NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException
+
+     */
     public static byte[] Decrypt (byte[] encryptedText, String password) throws IllegalBlockSizeException,
             BadPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
             InvalidAlgorithmParameterException, InvalidKeyException {
@@ -143,7 +189,18 @@ public class CryptoUtils {
         return decryptedText;
     }
 
-    public static byte[] Sign(byte[]  message) throws IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException, InvalidKeyException, SignatureException {
+    /**
+     * Sign()
+     * Signs message with user A signature
+     *
+     * @param byte[] message
+     * @return byte[] signature
+     * @throws IOException,CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException,
+     *          KeyStoreException, InvalidKeyException, SignatureException
+
+     */
+    public static byte[] Sign(byte[]  message) throws IOException, CertificateException, NoSuchAlgorithmException,
+            UnrecoverableKeyException, KeyStoreException, InvalidKeyException, SignatureException {
         //load properties
         Properties prop = new Properties();
         prop.load(new FileReader("cryptoUtils.properties"));
@@ -164,8 +221,20 @@ public class CryptoUtils {
 
         return(signature);
     }
+    /**
+     * Verify()
+     * makes sure encrypted message has been sent from ehre it's supposed to
+     *
+     * @param byte[] message
+     * @param byte[] signature
+     * @param byte[] certificate
+     * @return boolean it's sent from where it's supposed to
+     * @throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException
 
-    public static boolean Verify(byte[]  message, byte[] signature, byte[] certificate) throws IOException, CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+     */
+
+    public static boolean Verify(byte[]  message, byte[] signature, byte[] certificate) throws IOException,
+            CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         InputStream certificateStream= new ByteArrayInputStream(certificate);
         var certificateFactory = CertificateFactory.getInstance("X.509");
         var cert = certificateFactory.generateCertificate(certificateStream);
@@ -191,6 +260,15 @@ public class CryptoUtils {
 
     }
 
+    /**
+     * getPrivateKeyFromPassword()
+     * generates a private key for each password
+     *
+     * @param Stirng password
+     * @return Key private key from password
+     * @throws NoSuchAlgorithmException, InvalidKeySpecException
+
+     */
     private static Key getPrivateKeyFromPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] salt = new byte[100];
         SecureRandom random = new SecureRandom();
